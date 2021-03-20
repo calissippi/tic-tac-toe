@@ -1,0 +1,101 @@
+def display_board():
+    print("-" * 9)
+    for i in range(3):
+        print("|", *play[i], "|")
+    print("-" * 9)
+ 
+# counters for three in row
+cross_row = 0
+oh_row = 0
+def checking():
+    global cross_row, oh_row 
+    for part in play:
+        if all(each == part[0] for each in part):
+            if "X" in part:
+                cross_row += 1
+            elif "O" in part:
+                oh_row += 1     
+#     transposes play array            
+    transposed = [play[j][i] for i in range(len(play)) for j in range(len(play[0]))]
+    transposed = [transposed[i:i + 3] for i in range(0, len(turn), 3)]
+    for part in transposed:
+        if all(each == part[0] for each in part):
+            if "X" in part:
+                cross_row += 1
+            elif "O" in part:
+                oh_row += 1
+    return cross_row, oh_row
+
+# checks for consecutive marks in list
+def check_list():
+    global cross_row, oh_row
+#     turns diagonal into list
+    diagonal = [r[i] for i, r in enumerate(play)]
+    flip = [r[-i - 1] for i, r in enumerate(play)]
+    if all(each == diagonal[0] for each in diagonal):
+        if "X" in diagonal:
+            cross_row += 1
+        elif "O" in diagonal:
+            oh_row += 1      
+    if all(each == flip[0] for each in flip):
+        if "X" in flip:
+            cross_row += 1
+        elif "O" in flip:
+            oh_row += 1
+    return cross_row, oh_row  
+
+# keeps count of whose turn
+counter = 1
+# places markers
+def play_loop():
+    global counter
+    try:
+        coord_a, coord_b = input("Enter the coordinates: ").split()
+#       turns coords to index nums
+        if int(coord_a) in range(4) and int(coord_b) in range(4):
+            a, b = int(coord_a) - 1, int(coord_b) -1
+            if play[a][b] == " ":
+                if counter % 2 == 1:
+                    play[a][b] = "X"
+                    display_board()
+                    counter += 1
+                else:
+                    play[a][b] = "O"
+                    display_board()
+                    counter += 1
+            else:
+                print("This cell is occupied! Choose another one!")
+        else:
+            print("Coordinates should be from 1 to 3!")
+    except ValueError:
+        print("You should enter numbers!")
+        
+# checks game result
+def game_results():
+    again = True
+    cross_row, oh_row = checking()
+    cross_row, oh_row = check_list()
+    if cross_row >= 1:
+        again = False
+        print("X wins")
+    elif oh_row >= 1:
+        again = False
+        print("O wins")
+    elif all(each != " " for part in play for each in part):
+        again = False
+        print("Draw")
+    return again
+    
+# creates blanks for board on start
+turn = list(" " * 9)
+play = [turn[i:i + 3] for i in range(0, len(turn), 3)]
+
+display_board()
+# play loop
+again = True
+while again == True:
+    again = game_results()
+    if again == False:
+        break;
+    else:
+        play_loop()
