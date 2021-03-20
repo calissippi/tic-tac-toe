@@ -4,6 +4,7 @@ def display_board():
         print("|", *play[i], "|")
     print("-" * 9)
  
+ 
 # counters for three in row
 cross_row = 0
 oh_row = 0
@@ -26,6 +27,7 @@ def checking():
                 oh_row += 1
     return cross_row, oh_row
 
+
 # checks for consecutive marks in list
 def check_list():
     global cross_row, oh_row
@@ -43,6 +45,7 @@ def check_list():
         elif "O" in flip:
             oh_row += 1
     return cross_row, oh_row  
+
 
 # keeps count of whose turn
 counter = 1
@@ -70,11 +73,11 @@ def play_loop():
     except ValueError:
         print("You should enter numbers!")
         
+        
 # checks game result
 def game_results():
-    again = True
-    cross_row, oh_row = checking()
-    cross_row, oh_row = check_list()
+    global again
+    checking(), check_list()
     if cross_row >= 1:
         again = False
         print("X wins")
@@ -85,17 +88,17 @@ def game_results():
         again = False
         print("Draw")
     return again
-    
+
+
 # creates blanks for board on start
 turn = list(" " * 9)
 play = [turn[i:i + 3] for i in range(0, len(turn), 3)]
-
 display_board()
 # play loop
 again = True
-while again == True:
+while again:
     again = game_results()
-    if again == False:
-        break;
+    if not again:
+        break
     else:
-        play_loop()
+        play_loop())
